@@ -3,6 +3,7 @@ import { FiLock, FiUser } from "react-icons/fi";
 import { AiFillBank } from "react-icons/ai";
 import logo from "../assets/logo.gif";
 import Accueil from "./Accueil";
+import RespSec from "./RespSec";
 import "./Accueil.css";
 import "./Auth.css";
 
@@ -29,18 +30,38 @@ function AuthInput({ label, type, name, value, onChange, placeholder }) {
   );
 }
 
-function authenticateUser(formData, setIsAuthenticated) {
+function authenticateUser(formData, setIsAuthenticated, setSelectedId) {
+  const allowedIds = ["0", "1", "2"];
+
+  if (!allowedIds.includes(formData.id)) {
+    window.alert("id non valid you must choose a id from the list below");
+    setIsAuthenticated(false);
+    setSelectedId("");
+    return;
+  }
+
+  window.localStorage.setItem("isAuthenticated", "true");
+  window.localStorage.setItem("selectedId", formData.id);
   window.alert(`Identifiant: ${formData.id}\nMot de passe: ${formData.password}`);
+  setSelectedId(formData.id);
   setIsAuthenticated(true);
 }
 
 
 export default function Authentification() {
-  const [formData, setFormData] = useState({//seta ll formData to empty string
+  const [formData, setFormData] = useState({
     id: "",
     password: "",
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(false);//set isAuthenticated to false
+  const [isAuthenticated, setIsAuthenticated] = useState(() => window.localStorage.getItem("isAuthenticated") === "true");
+  const [selectedId, setSelectedId] = useState(() => window.localStorage.getItem("selectedId") || "");
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("isAuthenticated");
+    window.localStorage.removeItem("selectedId");
+    setSelectedId("");
+    setIsAuthenticated(false);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -52,12 +73,22 @@ export default function Authentification() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    authenticateUser(formData, setIsAuthenticated);
+    authenticateUser(formData, setIsAuthenticated, setSelectedId);
   };
 
   if (isAuthenticated) {
-    return <Accueil />;
-  }
+    switch (selectedId) {
+      case "0":
+        return <Accueil onLogout={handleLogout} />;
+      case "1":
+        return <Accueil onLogout={handleLogout} />;
+      case "2":
+        return <RespSec onLogout={handleLogout} />;
+      default:
+        return <Accueil onLogout={handleLogout} />;
+      
+    }
+  } 
 
   return (
     <center>
@@ -72,7 +103,10 @@ export default function Authentification() {
           </div>
 
           <p className="auth-subtitle">
-            Connectez-vous pour accéder à la gestion sécurisée des visiteurs.
+            Connectez-vous pour accéder à la gestion sécurisée des visiteurs. 
+            0... admin page
+            1... accueil
+            2...security
           </p>
 
           <form className="auth-form" onSubmit={handleSubmit}>

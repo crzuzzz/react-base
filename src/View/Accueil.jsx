@@ -40,7 +40,7 @@ const topBarItems = [//************************************************top bar h
 
 
 
-export default function Accueil() {
+export default function Accueil({ onLogout }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function Accueil() {
 
   return (
     <div className="accueil">
-      <TopBar items={topBarItems} scrolled={scrolled} />
+      <TopBar items={topBarItems} scrolled={scrolled} onLogout={onLogout} />
 
       <main>
         <section className="hero-section animate-on-scroll" id="hero">

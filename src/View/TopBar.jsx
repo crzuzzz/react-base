@@ -1,8 +1,6 @@
 import "./Accueil.css";
 
-
-
-export default function TopBar({ items = [], scrolled = false, onLogout =   () => {"/Authentification.jsx"} }) {
+export default function TopBar({ items = [], scrolled = false, onLogout = () => {} }) {
   return (
     <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-inner">
