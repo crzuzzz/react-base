@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from "react";
-import { AiFillBank, AiOutlineHistory, AiOutlineUserAdd } from "react-icons/ai";
-import { BsFacebook, BsLinkedin, BsGithub } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineHistory, AiOutlineUserAdd } from "react-icons/ai";
 import { FiSearch, FiClock, FiInfo } from "react-icons/fi";
 import "./Accueil.css";
 import TopBar from "./TopBar.jsx";
@@ -32,6 +32,7 @@ const featureItems = [
   },
 ];
 
+<<<<<<< HEAD:src/View/Accueil.jsx
 const topBarItems = [//************************************************top bar here  
   { title: "Accueil", route: "#hero" },
   { title: "Fonctionnalités", route: "#features" },
@@ -41,6 +42,10 @@ const topBarItems = [//************************************************top bar h
 
 
 export default function Accueil({ onLogout }) {
+=======
+export default function Accueil() {
+  const navigate = useNavigate();
+>>>>>>> 6c71dd81175c9fe766416c00223017078ca53196:src/pages/Accueil.jsx
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -128,7 +133,7 @@ export default function Accueil({ onLogout }) {
             </div>
             <div className="feature-grid">
               {featureItems.map(({ Icon, title, description, route }, index) => (
-              <article key={index} className="feature-card" onClick={() => (window.location.href = route)}>
+              <article key={index} className="feature-card" onClick={() => navigate(route)}>
                 <div className="feature-icon">
                   <Icon />
                 </div>
