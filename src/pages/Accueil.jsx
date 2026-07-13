@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from "react";
-import { AiFillBank, AiOutlineHistory, AiOutlineUserAdd } from "react-icons/ai";
-import { BsFacebook, BsLinkedin, BsGithub } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineHistory, AiOutlineUserAdd } from "react-icons/ai";
 import { FiSearch, FiClock, FiInfo } from "react-icons/fi";
 import "./Accueil.css";
 
@@ -32,6 +32,7 @@ const featureItems = [
 ];
 
 export default function Accueil() {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -135,7 +136,7 @@ export default function Accueil() {
             </div>
             <div className="feature-grid">
               {featureItems.map(({ Icon, title, description, route }, index) => (
-              <article key={index} className="feature-card" onClick={() => (window.location.href = route)}>
+              <article key={index} className="feature-card" onClick={() => navigate(route)}>
                 <div className="feature-icon">
                   <Icon />
                 </div>
