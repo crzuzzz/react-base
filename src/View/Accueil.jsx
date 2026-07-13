@@ -3,6 +3,7 @@ import { AiFillBank, AiOutlineHistory, AiOutlineUserAdd } from "react-icons/ai";
 import { BsFacebook, BsLinkedin, BsGithub } from "react-icons/bs";
 import { FiSearch, FiClock, FiInfo } from "react-icons/fi";
 import "./Accueil.css";
+import TopBar from "./TopBar.jsx";
 
 const featureItems = [
   {
@@ -29,6 +30,12 @@ const featureItems = [
     description: "Consulter toutes les visites.",
     route: "/historique",
   },
+];
+
+const topBarItems = [//************************************************top bar here  
+  { title: "Accueil", route: "#hero" },
+  { title: "Fonctionnalités", route: "#features" },
+  { title: "À propos", route: "#about" },
 ];
 
 
@@ -62,23 +69,7 @@ export default function Accueil() {
 
   return (
     <div className="accueil">
-      <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
-        <div className="navbar-inner">
-          <a href="#hero" className="brand">
-            <img className="brand-icon" src="/src/assets/logo.gif" alt="AttijariBank logo" />
-          </a>
-
-          <nav className="nav-links">
-            <a href="#hero">Accueil</a>
-            <a href="#features">Fonctionnalités</a>
-            <a href="#about">À propos</a>
-          </nav>
-
-          <div className="nav-actions">
-            <a href="Authentification.jsx" className="button button-primary">Déconnexion</a>
-          </div>
-        </div>
-      </header>
+      <TopBar items={topBarItems} scrolled={scrolled} />
 
       <main>
         <section className="hero-section animate-on-scroll" id="hero">

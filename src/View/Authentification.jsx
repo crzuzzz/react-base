@@ -36,11 +36,11 @@ function authenticateUser(formData, setIsAuthenticated) {
 
 
 export default function Authentification() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({//seta ll formData to empty string
     id: "",
     password: "",
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);//set isAuthenticated to false
 
   const handleChange = (event) => {
     const { name, value } = event.target;
