@@ -47,7 +47,7 @@ const topBarItems = [
     
 ];
 
-export default function RespSec() {
+export default function RespSec({ onLogout = () => {} }) {
 
     const [scrolled, setScrolled] = useState(false);
 
@@ -73,7 +73,7 @@ export default function RespSec() {
 
     return (
         <div className="resp-sec">
-            <TopBar items={topBarItems} scrolled={scrolled} onLogout={handleLogout} />
+            <TopBar items={topBarItems} scrolled={scrolled} onLogout={onLogout} />
 
             <main className="resp-sec-main">
                 
