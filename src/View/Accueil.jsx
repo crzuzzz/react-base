@@ -31,6 +31,8 @@ const featureItems = [
   },
 ];
 
+
+
 export default function Accueil() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -73,7 +75,7 @@ export default function Accueil() {
           </nav>
 
           <div className="nav-actions">
-            <a href="#hero" className="button button-primary">Déconnexion</a>
+            <a href="Authentification.jsx" className="button button-primary">Déconnexion</a>
           </div>
         </div>
       </header>
