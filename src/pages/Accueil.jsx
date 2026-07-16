@@ -1,9 +1,11 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineHistory, AiOutlineUserAdd } from "react-icons/ai";
 import { FiSearch, FiClock, FiInfo } from "react-icons/fi";
 import "./Accueil.css";
 import TopBar from "./TopBar";
+
+
 
 const featureItems = [
   {
@@ -40,7 +42,7 @@ const topBarItems = [//************************************************top bar h
 
 
 
-export default function Accueil({ onLogout }) {
+export default function Accueil({ onLogout = () => {} }) { 
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
@@ -67,6 +69,7 @@ export default function Accueil({ onLogout }) {
     document.querySelectorAll(".animate-on-scroll").forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
+
 
   return (
     <div className="accueil">

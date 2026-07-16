@@ -1,11 +1,12 @@
 import "./Accueil.css";
+import logo from "../assets/logo.gif";
 
 export default function TopBar({ items = [], scrolled = false, onLogout = () => {} }) {
   return (
     <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-inner">
         <a href="#hero" className="brand">
-          <img className="brand-icon" src="/src/assets/logo.gif" alt="AttijariBank logo" />
+          <img className="brand-icon" src={logo} alt="AttijariBank logo" />
         </a>
 
         <nav className="nav-links">

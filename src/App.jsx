@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Accueil from "./pages/Accueil";
+import Authentification from "./pages/Authentification";
 import Enregistrement from "./pages/Enregistrement";
 import Horaire from "./pages/Horaire";
 import Historique from "./pages/Historique";
@@ -9,7 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Accueil />} />
+        <Route path="/" element={<Authentification />} />
         <Route path="/enregistrement" element={<Enregistrement />} />
         <Route path="/entree-sortie" element={<Horaire />} />
         <Route path="/historique" element={<Historique />} />

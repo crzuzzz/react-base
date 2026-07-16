@@ -39,11 +39,12 @@ a {
 a {
   text-decoration: none;
 }
-
 .accueil {
   min-height: 100svh;
   width: 100%;
   overflow-x: hidden;
+  position: relative;
+  z-index: 1; /* Keep the page container below the navbar's 99999 layer */
 }
 
 .accueil main {
@@ -52,15 +53,16 @@ a {
   margin: 0 auto;
   padding: 0 32px;
 }
-
 .navbar {
-  position: fixed;
+  position: fixed !important; /* Keep it locked to the top */
   inset: 0 auto auto 0;
   width: 100%;
-  z-index: 100;
+  z-index: 99999 !important; /* Force it to the absolute top layer */
   padding: 24px 48px;
   background: linear-gradient(180deg, rgba(242,140,40,0.14), rgba(255,255,255,0.03));
+  backdrop-filter: blur(8px); /* Subtle blur so it stands out from content */
   transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+  pointer-events: auto !important; /* Make sure it captures pointer clicks */
 }
 
 .navbar.scrolled {
@@ -145,6 +147,9 @@ a {
 .button-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: var(--white);
+  position: relative;
+  z-index: 10000 !important;
+  pointer-events: auto !important; /* Forces the browser to register clicks on the button */
 }
 
 .hero-section {

@@ -63,10 +63,6 @@ export default function RespSec({ onLogout = () => {} }) {
         document.title = "Espace Responsable Sécurité - AttijariBank";
     }, []);
 
-    const handleLogout = () => {
-        window.location.reload();
-    };
-
     const handleFilterSubmit = (event) => {
         event.preventDefault();
     };
