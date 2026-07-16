@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineHistory, AiOutlineUserAdd } from "react-icons/ai";
 import { FiSearch, FiClock, FiInfo } from "react-icons/fi";
 import "./Accueil.css";
+import TopBar from "./TopBar";
 
 const featureItems = [
   {
@@ -30,6 +31,14 @@ const featureItems = [
     route: "/historique",
   },
 ];
+
+const topBarItems = [//************************************************top bar here  
+  { title: "Accueil", route: "#hero" },
+  { title: "Fonctionnalités", route: "#features" },
+  { title: "À propos", route: "#about" },
+];
+
+
 
 export default function Accueil({ onLogout }) {
   const navigate = useNavigate();
@@ -61,28 +70,7 @@ export default function Accueil({ onLogout }) {
 
   return (
     <div className="accueil">
-      <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
-        <div className="navbar-inner">
-          <a href="#hero" className="brand">
-            <img className="brand-icon" src="/src/assets/logo.gif" alt="AttijariBank logo" />
-          </a>
-
-          <nav className="nav-links">
-            <a href="#hero">Accueil</a>
-            <a href="#features">Fonctionnalités</a>
-            <a href="#about">À propos</a>
-          </nav>
-
-          <div className="nav-actions">
-            <button
-  className="button button-primary"
-  onClick={onLogout}
->
-  Déconnexion
-</button>
-          </div>
-        </div>
-      </header>
+      <TopBar items={topBarItems} scrolled={scrolled} onLogout={onLogout} />
 
       <main>
         <section className="hero-section animate-on-scroll" id="hero">
