@@ -31,7 +31,7 @@ const featureItems = [
   },
 ];
 
-export default function Accueil() {
+export default function Accueil({ onLogout }) {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
@@ -74,7 +74,12 @@ export default function Accueil() {
           </nav>
 
           <div className="nav-actions">
-            <a href="#hero" className="button button-primary">Déconnexion</a>
+            <button
+  className="button button-primary"
+  onClick={onLogout}
+>
+  Déconnexion
+</button>
           </div>
         </div>
       </header>

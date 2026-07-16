@@ -24,13 +24,45 @@ export default function Enregistrement() {
 
     const validateForm = () => {
         const newErrors = {};
+        const lettersRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/;
+        const lettersAndSpacesRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/;
+        const cinRegex = /^\d{8}$/;
 
-        if (!formData.nom.trim()) newErrors.nom = "Le nom est requis";
-        if (!formData.prenom.trim()) newErrors.prenom = "Le prénom est requis";
-        if (!formData.cin.trim()) newErrors.cin = "CIN ou Passeport est requis";
-        if (!formData.societe.trim()) newErrors.societe = "La société/organisme est requis";
-        if (!formData.visitePour.trim()) newErrors.visitePour = "Personne à visiter est requise";
-        if (!formData.motif.trim()) newErrors.motif = "Le motif de visite est requis";
+        if (!formData.nom.trim()) {
+            newErrors.nom = "Le nom est requis";
+        } else if (!lettersRegex.test(formData.nom.trim())) {
+            newErrors.nom = "Nom invalide : uniquement des lettres";
+        }
+
+        if (!formData.prenom.trim()) {
+            newErrors.prenom = "Le prénom est requis";
+        } else if (!lettersRegex.test(formData.prenom.trim())) {
+            newErrors.prenom = "Prénom invalide : uniquement des lettres";
+        }
+
+        if (!formData.cin.trim()) {
+            newErrors.cin = "CIN est requis";
+        } else if (!cinRegex.test(formData.cin.trim())) {
+            newErrors.cin = "CIN invalide : exactement 8 chiffres";
+        }
+
+        if (!formData.societe.trim()) {
+            newErrors.societe = "La société/organisme est requis";
+        } else if (!lettersRegex.test(formData.societe.trim())) {
+            newErrors.societe = "Société/organisme invalide : uniquement des lettres";
+        }
+
+        if (!formData.visitePour.trim()) {
+            newErrors.visitePour = "Personne à visiter est requise";
+        } else if (!lettersAndSpacesRegex.test(formData.visitePour.trim())) {
+            newErrors.visitePour = "Personne à visiter invalide : uniquement des lettres et des espaces";
+        }
+
+        if (!formData.motif.trim()) {
+            newErrors.motif = "Le motif de visite est requis";
+        } else if (!lettersAndSpacesRegex.test(formData.motif.trim())) {
+            newErrors.motif = "Motif invalide : uniquement des lettres et des espaces";
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -39,24 +71,93 @@ export default function Enregistrement() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors((prev) => ({ ...prev, [name]: "" }));
+
+        const fieldErrors = {};
+        const lettersRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/;
+        const lettersAndSpacesRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/;
+        const cinRegex = /^\d{8}$/;
+        const trimmedValue = value.trim();
+
+        if (name === "nom") {
+            if (!trimmedValue) fieldErrors.nom = "Le nom est requis";
+            else if (!lettersRegex.test(trimmedValue)) fieldErrors.nom = "Nom invalide : uniquement des lettres";
         }
+
+        if (name === "prenom") {
+            if (!trimmedValue) fieldErrors.prenom = "Le prénom est requis";
+            else if (!lettersRegex.test(trimmedValue)) fieldErrors.prenom = "Prénom invalide : uniquement des lettres";
+        }
+
+        if (name === "cin") {
+            if (!trimmedValue) fieldErrors.cin = "CIN est requis";
+            else if (!cinRegex.test(trimmedValue)) fieldErrors.cin = "CIN invalide : exactement 8 chiffres";
+        }
+
+        if (name === "societe") {
+            if (!trimmedValue) fieldErrors.societe = "La société/organisme est requis";
+            else if (!lettersRegex.test(trimmedValue)) fieldErrors.societe = "Société/organisme invalide : uniquement des lettres";
+        }
+
+        if (name === "visitePour") {
+            if (!trimmedValue) fieldErrors.visitePour = "Personne à visiter est requise";
+            else if (!lettersAndSpacesRegex.test(trimmedValue)) fieldErrors.visitePour = "Personne à visiter invalide : uniquement des lettres et des espaces";
+        }
+
+        if (name === "motif") {
+            if (!trimmedValue) fieldErrors.motif = "Le motif de visite est requis";
+            else if (!lettersAndSpacesRegex.test(trimmedValue)) fieldErrors.motif = "Motif invalide : uniquement des lettres et des espaces";
+        }
+
+        setErrors((prev) => ({
+            ...prev,
+            [name]: fieldErrors[name] || "",
+        }));
+    };
+const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+        setMessageType("error");
+        setMessageText("Veuillez remplir tous les champs obligatoires correctement.");
+        setShowMessage(true);
+        return;
+    }
+
+    const visiteur = {
+        nom: formData.nom,
+        prenom: formData.prenom,
+        cin: formData.cin,
+        societe: formData.societe,
+        visitePour: formData.visitePour,
+         motif: formData.motif,
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  try {
+    const responseVisiteur = await fetch("http://localhost:8080/visiteurs", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(visiteur)
+    });
 
-        if (!validateForm()) {
-            setMessageType("error");
-            setMessageText("Veuillez remplir tous les champs obligatoires correctement.");
-            setShowMessage(true);
-            setTimeout(() => setShowMessage(false), 5000);
-            return;
-        }
-
+    if (responseVisiteur.ok) {
         setShowPopup(true);
-    };
+
+        setFormData({
+            nom: "",
+            prenom: "",
+            cin: "",
+            societe: "",
+            visitePour: "",
+            motif: "",
+        });
+    }
+
+} catch (error) {
+    console.log("Erreur connexion backend :", error);
+}
+};
     const closePopup = () => {
         setShowPopup(false);
 
@@ -150,7 +251,7 @@ export default function Enregistrement() {
                             </div>
 
                             <div className="form-group full-width centered">
-                                <label htmlFor="cin">CIN ou Passeport *</label>
+                                <label htmlFor="cin">Numéro de CIN *</label>
                                 <input
                                     type="text"
                                     id="cin"
@@ -158,7 +259,7 @@ export default function Enregistrement() {
                                     value={formData.cin}
                                     onChange={handleChange}
                                     className={errors.cin ? "error" : ""}
-                                    placeholder="Entrez le CIN ou numéro de passeport"
+                                    placeholder="Entrez le numéro de CIN"
                                 />
                                 {errors.cin && <span className="error-message">{errors.cin}</span>}
                             </div>
