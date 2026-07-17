@@ -9,47 +9,60 @@ const statistics = [
     { label: "Alertes de sécurité", value: "0 anomalie" },
 ];
 
-const visits = [
-    {
-        visitor: "Mohamed Ben Ali",
-        cin: "08765432",
-        company: "Sagemcom",
-        date: "13/07/2026",
-        start: "09:00",
-        end: "11:30",
-        refEmployee: "Adem Trabelsi",
-        status: "En cours",
-    },
-    {
-        visitor: "Amine Mansour",
-        cin: "14234567",
-        company: "PwC Tunisie",
-        date: "13/07/2026",
-        start: "14:00",
-        end: "15:30",
-        refEmployee: "Sonia Meriah",
-        status: "En attente",
-    },
-    {
-        visitor: "Sarah Zaibi",
-        cin: "09812345",
-        company: "BIAT Consulting",
-        date: "12/07/2026",
-        start: "10:00",
-        end: "12:00",
-        refEmployee: "Karim Gharbi",
-        status: "Terminé",
-    },
-];
 
 const topBarItems = [
     { title: "Espace Responsable Sécurité", route: "" },
     
 ];
 
+function DisplayTables({ visits }) {
+    return (
+        <tbody>
+            {visits.map((visit) => (
+                // Use the database primary key (idVisite) as the React key
+                <tr key={visit.idVisite}>
+                    {/* Combine Nom and Prénom */}
+                    <td>{visit.visiteur.nom} {visit.visiteur.prenom}</td>
+                    
+                    {/* Access nested visitor fields */}
+                    <td>{visit.visiteur.cin}</td>
+                    <td>{visit.visiteur.societe}</td>
+                    
+                    {/* Match backend Visite properties */}
+                    <td>{visit.dateVisite}</td>
+                    <td>{visit.heureDebut}</td>
+                    <td>{visit.heureFin ? visit.heureFin : "-"}</td>
+                    <td>{visit.personneVisite}</td>
+                    
+                    <td>
+                        <span className={`resp-sec-status resp-sec-status-${visit.status.toLowerCase().replace(/\s+/g, "-")}`}>
+                            {visit.status}
+                        </span>
+                    </td>
+                </tr>
+            ))}
+        </tbody>
+    );
+}
 export default function RespSec({ onLogout = () => {} }) {
 
     const [scrolled, setScrolled] = useState(false);
+
+    //visits display data ... *************************************************************************************
+    const [visits, setVisits] = useState([]); //where to store the visits data
+
+    useEffect(() => {
+    fetch("http://localhost:8080/visites")
+        .then((response) => response.json())
+        .then((data) => {
+            setVisits(data); // Save the database records into state
+        })
+        .catch((error) => {
+            console.error("Erreur de récupération des visites:", error);
+        });
+}, []);
+
+
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 24);
@@ -135,24 +148,7 @@ export default function RespSec({ onLogout = () => {} }) {
                                         <th>Statut</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {visits.map((visit) => (
-                                        <tr key={`${visit.cin}-${visit.date}`}>
-                                            <td>{visit.visitor}</td>
-                                            <td>{visit.cin}</td>
-                                            <td>{visit.company}</td>
-                                            <td>{visit.date}</td>
-                                            <td>{visit.start}</td>
-                                            <td>{visit.end}</td>
-                                            <td>{visit.refEmployee}</td>
-                                            <td>
-                                                <span className={`resp-sec-status resp-sec-status-${visit.status.toLowerCase().replace(/\s+/g, "-")}`}>
-                                                    {visit.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
+                                <DisplayTables visits={visits} />
                             </table>
                         </div>
                     </div>
