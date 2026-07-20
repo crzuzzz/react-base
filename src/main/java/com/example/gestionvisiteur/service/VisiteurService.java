@@ -126,6 +126,6 @@ public class VisiteurService {
         journalRepository.save(log);
         // ==========================================
 
-        retunr updated;
+        return updated;
     }
 }
