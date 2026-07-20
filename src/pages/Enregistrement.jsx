@@ -24,7 +24,7 @@ export default function Enregistrement() {
 
     const validateForm = () => {
         const newErrors = {};
-        const lettersRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/;
+        const lettersRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/;
         const lettersAndSpacesRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/;
         const cinRegex = /^\d{8}$/;
 
@@ -73,7 +73,7 @@ export default function Enregistrement() {
         setFormData((prev) => ({ ...prev, [name]: value }));
 
         const fieldErrors = {};
-        const lettersRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/;
+        const lettersRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/;
         const lettersAndSpacesRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/;
         const cinRegex = /^\d{8}$/;
         const trimmedValue = value.trim();
@@ -171,6 +171,8 @@ const handleSubmit = async (e) => {
         });
 
         setErrors({});
+
+        navigate("/fonctionnalites");
     };
 
 
@@ -194,8 +196,8 @@ const handleSubmit = async (e) => {
                 <div className="page-header">
                     <button
                         className="back-button"
-                        onClick={() => navigate("/")}
-                        title="Retour à l'accueil"
+                        onClick={() => navigate("/fonctionnalites")}
+                        title="Retour aux fonctionnalités"
                     >
                         <FiArrowLeft />
                     </button>

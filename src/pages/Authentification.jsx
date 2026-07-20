@@ -1,9 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiLock, FiUser } from "react-icons/fi";
 import { AiFillBank } from "react-icons/ai";
 import logo from "../assets/logo.gif";
-import Accueil from "./Accueil";
-import RespSec from "./RespSec";
 import "./Accueil.css";
 import "./Auth.css";
 
@@ -30,7 +29,7 @@ function AuthInput({ label, type, name, value, onChange, placeholder }) {
   );
 }
 
-function authenticateUser(formData, setIsAuthenticated, setSelectedId) {
+function authenticateUser(formData, setIsAuthenticated, setSelectedId, navigate) {
   const allowedIds = ["0", "1", "2"];
 
   if (!allowedIds.includes(formData.id)) {
@@ -45,23 +44,22 @@ function authenticateUser(formData, setIsAuthenticated, setSelectedId) {
   window.alert(`Identifiant: ${formData.id}\nMot de passe: ${formData.password}`);
   setSelectedId(formData.id);
   setIsAuthenticated(true);
+  if (formData.id === "0") {
+    navigate("/Admin");
+  } else if (formData.id === "1") {
+    navigate("/accueil");
+  } else if (formData.id === "2") {
+    navigate("/repsec");
+  }
 }
 
 
 export default function Authentification() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     id: "",
     password: "",
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(() => window.localStorage.getItem("isAuthenticated") === "true");
-  const [selectedId, setSelectedId] = useState(() => window.localStorage.getItem("selectedId") || "");
-
-  const handleLogout = () => {
-    window.localStorage.removeItem("isAuthenticated");
-    window.localStorage.removeItem("selectedId");
-    setSelectedId("");
-    setIsAuthenticated(false);
-  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -73,22 +71,8 @@ export default function Authentification() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    authenticateUser(formData, setIsAuthenticated, setSelectedId);
+    authenticateUser(formData, () => {}, () => {}, navigate);
   };
-
-  if (isAuthenticated) {
-    switch (selectedId) {
-      case "0":
-        return <Accueil onLogout={handleLogout} />;
-      case "1":
-        return <Accueil onLogout={handleLogout} />;
-      case "2":
-        return <RespSec onLogout={handleLogout} />;
-      default:
-        return <Accueil onLogout={handleLogout} />;
-      
-    }
-  } 
 
   return (
     <center>

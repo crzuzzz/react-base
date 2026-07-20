@@ -187,6 +187,13 @@ a {
   position: relative;
   --feature-box-width: calc((100% - 24px) / 2);
 }
+
+/* Make the features section card height fit its content (avoid large empty space)
+   Keep padding balanced while allowing the card to shrink to content size. */
+.section.features .section-card {
+  min-height: 0; /* allow auto height based on children */
+  padding: 28px; /* slightly reduced padding to keep balanced spacing */
+}
 .hero-section::before,
 .hero-section::after {
   content: "";
@@ -548,6 +555,158 @@ a {
   transform: translateY(0);
 }
 
+/* SEARCH SECTION STYLES */
+
+.search-section {
+  width: 100%;
+  margin: 0 auto 40px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+}
+
+/* Add extra top padding to ensure search content does not overlap fixed navbar */
+.search-section .section-card {
+  /* increase top padding so the search card starts well below the fixed navbar */
+  padding-top: 140px;
+}
+
+.table-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.table-header h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(2.8rem, 3.5vw, 3.5rem);
+}
+
+.table-header p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.search-box input {
+  flex: 1;
+  height: 50px;
+  /* keep primary border color always (not only on focus) */
+  border: 1px solid var(--primary);
+  border-radius: 14px;
+  padding: 0 20px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.search-box input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.15);
+}
+
+.search-icon {
+  color: var(--primary);
+  font-size: 24px;
+}
+
+/* make the icon behave as a button without changing visual style */
+.icon-search {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--primary);
+  font-size: 24px;
+}
+
+.search-button {
+  height: 50px;
+  padding: 0 25px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  transition: 0.3s;
+}
+
+.search-button:hover {
+  transform: translateY(-2px);
+}
+
+/* TABLE STYLES */
+
+.historique-table {
+  width: 100%;
+  /* Use separate borders so border-radius displays correctly on the outer table border */
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  /* outer border to match search input border color so corners are colored */
+  border: 1px solid var(--primary);
+}
+
+.historique-table thead {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.historique-table th {
+  color: white;
+  padding: 18px;
+  text-align: center;
+  font-weight: 600;
+  /* make header cell border match the search input border */
+  border: 1px solid var(--primary);
+}
+
+.historique-table td {
+  padding: 18px;
+  text-align: center;
+  /* make body cell borders match the search input border */
+  border: 1px solid var(--primary);
+}
+
+/* Ensure rounded colored corners on the table match the outer border */
+.historique-table thead th:first-child {
+  border-top-left-radius: 18px;
+}
+.historique-table thead th:last-child {
+  border-top-right-radius: 18px;
+}
+.historique-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 18px;
+}
+.historique-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 18px;
+}
+
+.historique-table tbody tr:hover {
+  background: #fff8f1;
+}
+
+.empty-table {
+  padding: 70px;
+  color: #888;
+  font-size: 17px;
+}
+
 @media (max-width: 1120px) {
   .feature-grid,
   .footer-grid,
@@ -616,6 +775,19 @@ a {
   .hero-copy h1 {
     font-size: clamp(2.8rem, 8vw, 3.8rem);
   }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-button,
+  .search-box input {
+    width: 100%;
+  }
+  /* reduce top padding for search card on narrower screens */
+  .search-section .section-card {
+    padding-top: 96px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -646,4 +818,78 @@ a {
     flex-direction: column;
     align-items: flex-start;
   }
+  /* smaller devices: reduced top padding so content fits */
+  .search-section .section-card {
+    padding-top: 64px;
+  }
+}
+.delete-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+
+.delete-popup {
+  background: white;
+  width: 400px;
+  padding: 35px;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0,0,0,.15);
+}
+
+
+.delete-popup h3 {
+  margin-bottom: 15px;
+  color: #222;
+}
+
+
+.delete-popup p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+
+.delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.historique-table td {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.historique-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.historique-table th,
+.historique-table td {
+  min-width: 0;
+}
+
+.historique-table td input {
+  width: 95%;
+  height: 30px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.action-btn {
+  width: 80px;
+  height: 35px;
+  padding: 0;
+  font-size: 14px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
 }

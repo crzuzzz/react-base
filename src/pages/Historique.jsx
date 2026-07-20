@@ -12,7 +12,7 @@ export default function Historique() {
         <div className="page-header">
           <button
             className="back-button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/accueil")}
             title="Retour à l'accueil"
           >
             <FiArrowLeft />

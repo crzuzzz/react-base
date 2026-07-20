@@ -14,7 +14,7 @@ export default function Recherche() {
 
           <button
             className="back-button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/accueil")}
             title="Retour à l'accueil"
           >
             <FiArrowLeft />

@@ -43,9 +43,9 @@ export default function Horaire() {
         <div className="page-header">
 
           <button
-            className="back-button"
-            onClick={() => navigate("/")}
-            title="Retour à l'accueil"
+              className="back-button"
+              onClick={() => navigate("/fonctionnalites")}
+              title="Retour aux fonctionnalités"
           >
             <FiArrowLeft />
           </button>
@@ -102,10 +102,6 @@ export default function Horaire() {
                 <th>Statut</th>
 
                 <th>Sortie</th>
-
-                <th>Historique</th>
-
-                <th>Modifier</th>
 
               </tr>
 
@@ -176,17 +172,7 @@ export default function Horaire() {
 </button>
 </td>
 
-<td>
-  <button className="action-btn historique-btn">
-    Enregistrer
-  </button>
-</td>
 
-<td>
-  <button className="action-btn sortie-btn">
-    Modifier
-  </button>
-</td>
 
 
                   </tr>

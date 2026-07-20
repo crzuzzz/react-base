@@ -17,16 +17,29 @@ public class Journal {
             strategy = GenerationType.SEQUENCE,
             generator = "journal_seq"
     )
+    @Column(name = "ID_LOG") // 1. Added explicit column mapping for the Primary Key
     private Long idLog;
 
-    @Column(name = "date_action")
+    @Column(name = "DATE_ACTION") // 2. Changed to uppercase to match your DB schema
     private LocalDateTime dateAction;
 
+    @Column(name = "ACTION") // 3. Explicitly mapped to uppercase matching your DB
     private String action;
 
     @ManyToOne
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "ID_USER") // 4. Changed to uppercase to match your DB schema
     private Utilisateur utilisateur;
+
+    // Default Constructor (Required by JPA/Hibernate)
+    public Journal() {}
+
+    // Convenience Constructor for easy logging
+    public Journal(String action, LocalDateTime dateAction, Utilisateur utilisateur) {
+        this.action = action;
+        this.dateAction = dateAction;
+        this.utilisateur = utilisateur;
+    }
+
 
 
     public Long getIdLog() {
