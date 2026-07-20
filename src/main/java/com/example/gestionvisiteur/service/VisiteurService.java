@@ -1,5 +1,14 @@
 package com.example.gestionvisiteur.service;
 
+
+//added by med
+import com.example.gestionvisiteur.model.Journal;
+import com.example.gestionvisiteur.model.Utilisateur;
+import com.example.gestionvisiteur.repository.JournalRepository;
+import com.example.gestionvisiteur.repository.UtilisateurRepository;
+import java.time.LocalDateTime;
+//added by med
+
 import com.example.gestionvisiteur.dto.EnregistrementRequest;
 import com.example.gestionvisiteur.model.Visiteur;
 import com.example.gestionvisiteur.model.Visite;
@@ -17,11 +26,22 @@ public class VisiteurService {
 
     private final VisiteurRepository visiteurRepository;
     private final VisiteRepository visiteRepository;
+    //added by med
 
+    private JournalRepository journalRepository;
+    private UtilisateurRepository utilisateurRepository;
+    //added by med
+
+
+    // Update the constructor so Spring injects them automatically
     public VisiteurService(VisiteurRepository visiteurRepository,
-                           VisiteRepository visiteRepository) {
+                           VisiteRepository visiteRepository,
+                           JournalRepository journalRepository,       // === ADD THIS ===
+                           UtilisateurRepository utilisateurRepository) { // === ADD THIS ===
         this.visiteurRepository = visiteurRepository;
         this.visiteRepository = visiteRepository;
+        this.journalRepository = journalRepository;       // === ADD THIS ===
+        this.utilisateurRepository = utilisateurRepository; // === ADD THIS ===
     }
 
 
@@ -38,7 +58,6 @@ public class VisiteurService {
 
         // 1 - Enregistrer le visiteur
         Visiteur visiteur = new Visiteur();
-
         visiteur.setNom(request.getNom());
         visiteur.setPrenom(request.getPrenom());
         visiteur.setCin(request.getCin());
@@ -62,12 +81,28 @@ public class VisiteurService {
 
         visiteRepository.save(visite);
 
+        // ==========================================
+        // === added by med =========================
+        Utilisateur actor = utilisateurRepository.findById(1L).orElse(null); 
+        Journal log = new Journal("Enregistrement visiteur: " + nouveauVisiteur.getNom(), LocalDateTime.now(), actor);
+        journalRepository.save(log);
+        // ==========================================
+
 
         return nouveauVisiteur;
     }
 
 
     public void supprimerVisiteur(Long id) {
+        // ==========================================
+        // === added by med  ========================
+        Visiteur v = visiteurRepository.findById(id).orElse(null);
+        if (v != null) {
+            Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
+            Journal log = new Journal("Suppression visiteur: " + v.getNom(), LocalDateTime.now(), actor);
+            journalRepository.save(log);
+        }
+        // ==========================================
         visiteurRepository.deleteById(id);
     }
 
@@ -82,6 +117,15 @@ public class VisiteurService {
         ancienVisiteur.setCin(nouveauVisiteur.getCin());
         ancienVisiteur.setSociete(nouveauVisiteur.getSociete());
 
-        return visiteurRepository.save(ancienVisiteur);
+        Visiteur updated = visiteurRepository.save(ancienVisiteur);
+
+        // ==========================================
+        // === added by med =========================
+        Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
+        Journal log = new Journal("Modification visiteur: " + updated.getNom(), LocalDateTime.now(), actor);
+        journalRepository.save(log);
+        // ==========================================
+
+        retunr updated;
     }
 }
