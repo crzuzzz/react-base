@@ -5,6 +5,7 @@ import { AiFillBank } from "react-icons/ai";
 import logo from "../assets/logo.gif";
 import "./Accueil.css";
 import "./Auth.css";
+import "./Admin.jsx";
 
 function AuthButton({ text, type = "button" }) {
   return (
@@ -45,7 +46,7 @@ function authenticateUser(formData, setIsAuthenticated, setSelectedId, navigate)
   setSelectedId(formData.id);
   setIsAuthenticated(true);
   if (formData.id === "0") {
-    navigate("/Admin");
+    navigate("/admin");
   } else if (formData.id === "1") {
     navigate("/accueil");
   } else if (formData.id === "2") {

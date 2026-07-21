@@ -331,8 +331,14 @@ export default function Accueil({ onLogout }) {
               </a>
 
 
-              <a href="/fonctionnalites">
-                Fonctionnalités
+              <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/fonctionnalites");
+                  }}
+                >
+                  Fonctionnalités
               </a>
 
 
