@@ -20,7 +20,7 @@ public class JournalService {
 
     /**
      * Creates and saves a log entry to the JOURNAL table.
-     *
+     * 
      * @param actionDescription Text describing the operation (e.g., "Added visitor: John Doe")
      * @param actor             The user who performed the action
      */
@@ -28,14 +28,14 @@ public class JournalService {
     public void logAction(String actionDescription, Utilisateur actor) {
         if (actor == null) {
             // Skips logging or handles gracefully if no authenticated user session is active
-            return;
+            return; 
         }
 
         // Build the log entity using the constructor you created
         Journal log = new Journal(
-                actionDescription,
-                LocalDateTime.now(),
-                actor
+            actionDescription, 
+            LocalDateTime.now(), 
+            actor
         );
 
         // Save into the database

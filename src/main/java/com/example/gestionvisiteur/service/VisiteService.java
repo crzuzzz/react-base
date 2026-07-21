@@ -1,5 +1,13 @@
 package com.example.gestionvisiteur.service;
 
+// === added by med ===
+import com.example.gestionvisiteur.model.Journal;
+import com.example.gestionvisiteur.model.Utilisateur;
+import com.example.gestionvisiteur.repository.JournalRepository;
+import com.example.gestionvisiteur.repository.UtilisateurRepository;
+import java.time.LocalDateTime;
+// === added by med ===
+
 import com.example.gestionvisiteur.model.Visite;
 import com.example.gestionvisiteur.model.Visiteur;
 import com.example.gestionvisiteur.repository.VisiteRepository;
@@ -19,38 +27,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class VisiteService {
 
     private final VisiteRepository visiteRepository;
+    // === added by med ===
     private JournalRepository journalRepository;
     private UtilisateurRepository utilisateurRepository;
-    private final VisiteurRepository visiteurRepository;
+    // === added by med ===
 
-
-    public VisiteService(
-            VisiteRepository visiteRepository,
-            VisiteurRepository visiteurRepository,
-            JournalRepository journalRepository,       //added by med
-            UtilisateurRepository utilisateurRepository
-    ) {
+    // added by med
+    public VisiteService(VisiteRepository visiteRepository,
+                         JournalRepository journalRepository,       //added by med
+                         UtilisateurRepository utilisateurRepository) { //added by med
         this.visiteRepository = visiteRepository;
-        this.visiteurRepository = visiteurRepository;
         this.journalRepository = journalRepository;       //added by med
         this.utilisateurRepository = utilisateurRepository; //added by med
     }
 
-
+    
     // ajouter une visite
     public Visite ajouterVisite(Visite visite) {
-
         Visite savedVisite = visiteRepository.save(visite);
 
+        // ==========================================
+        // === added by med =====================
         Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
-
-        Journal log = new Journal(
-                "Ajout d'une visite ID: " + savedVisite.getIdVisite(),
-                LocalDateTime.now(),
-                actor
-        );
-
+        Journal log = new Journal("Ajout visite pour: " + savedVisite.getPersonneVisite(), LocalDateTime.now(), actor);
         journalRepository.save(log);
+        // ==========================================
 
         return savedVisite;
     }
@@ -68,24 +69,23 @@ public class VisiteService {
     }
 
 
-    // enregistrer sortie
     public Visite enregistrerSortie(Long idVisite) {
-
         Visite visite = visiteRepository.findById(idVisite)
                 .orElseThrow(() -> new RuntimeException("Visite non trouvée"));
 
         visite.setHeureFin(LocalTime.now());
         visite.setStatus("SORTI");
 
-        Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
-        Journal log = new Journal(
-                "Sortie enregistrée pour visite ID: " + visite.getIdVisite(),
-                LocalDateTime.now(),
-                actor
-        );
-        journalRepository.save(log);
+        Visite savedVisite = visiteRepository.save(visite);
 
-        return visiteRepository.save(visite);
+        // ==========================================
+        // === added by med =========================
+        Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
+        Journal log = new Journal("Sortie enregistrée pour visite ID: " + savedVisite.getIdVisite(), LocalDateTime.now(), actor);
+        journalRepository.save(log);
+        // ==========================================
+
+        return savedVisite;
     }
 
 

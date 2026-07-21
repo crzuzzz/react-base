@@ -14,47 +14,45 @@ const topBarItems = [
     { title: "Espace Responsable Sécurité", route: "" },
 ];
 
-
 function DisplayTables({ visits }) {
     if (visits.length === 0) {
         return (
             <tbody>
-            <tr>
-                <td colSpan="8" style={{ textAlign: "center", padding: "20px", color: "#888" }}>
-                    Aucune visite trouvée.
-                </td>
-            </tr>
+                <tr>
+                    <td colSpan="8" style={{ textAlign: "center", padding: "20px", color: "#888" }}>
+                        Aucune visite trouvée.
+                    </td>
+                </tr>
             </tbody>
         );
     }
 
     return (
         <tbody>
-        {visits.map((visit) => (
-            <tr key={visit.idVisite}>
-                <td>{visit.visiteur.nom} {visit.visiteur.prenom}</td>
-                <td>{visit.visiteur.cin}</td>
-                <td>{visit.visiteur.societe}</td>
-                <td>{visit.dateVisite}</td>
-                <td>{visit.heureDebut}</td>
-                <td>{visit.heureFin ? visit.heureFin : "-"}</td>
-                <td>{visit.personneVisite}</td>
-                <td>
+            {visits.map((visit) => (
+                <tr key={visit.idVisite}>
+                    <td>{visit.visiteur.nom} {visit.visiteur.prenom}</td>
+                    <td>{visit.visiteur.cin}</td>
+                    <td>{visit.visiteur.societe}</td>
+                    <td>{visit.dateVisite}</td>
+                    <td>{visit.heureDebut}</td>
+                    <td>{visit.heureFin ? visit.heureFin : "-"}</td>
+                    <td>{visit.personneVisite}</td>
+                    <td>
                         <span className={`resp-sec-status resp-sec-status-${visit.status.toLowerCase().replace(/\s+/g, "-")}`}>
                             {visit.status}
                         </span>
-                </td>
-            </tr>
-        ))}
+                    </td>
+                </tr>
+            ))}
         </tbody>
     );
 }
 
 export default function RespSec({ onLogout = () => {} }) {
-    const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
-    const [visits, setVisits] = useState([]);
-
+    const [visits, setVisits] = useState([]); 
+    
     // Search and filter states
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
@@ -158,22 +156,22 @@ export default function RespSec({ onLogout = () => {} }) {
                         <form className="resp-sec-form" onSubmit={handleFilterSubmit} style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
                             <label className="resp-sec-field" htmlFor="search-visite" style={{ flex: '1', minWidth: '200px' }}>
                                 <span>Rechercher par nom, CIN, société...</span>
-                                <input
-                                    type="text"
-                                    id="search-visite"
+                                <input 
+                                    type="text" 
+                                    id="search-visite" 
                                     placeholder="Ex: Ahmed, 12345678..."
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={(e) => setSearchQuery(e.target.value)} 
                                 />
                             </label>
 
                             <label className="resp-sec-field" htmlFor="date-visite" style={{ minWidth: '180px' }}>
                                 <span>Sélectionner une date</span>
-                                <input
-                                    type="date"
-                                    id="date-visite"
-                                    name="date-visite"
-                                    value={selectedDate}
+                                <input 
+                                    type="date" 
+                                    id="date-visite" 
+                                    name="date-visite" 
+                                    value={selectedDate} 
                                     onChange={(e) => setSelectedDate(e.target.value)}
                                 />
                             </label>

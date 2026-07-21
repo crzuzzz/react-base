@@ -1,10 +1,47 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import "./Accueil.css";
+import TopBar from "./TopBar";
 
-export default function Accueil({ onLogout }) {
 
+
+const featureItems = [
+  {
+    Icon: AiOutlineUserAdd,
+    title: "Enregistrement",
+    description: "Créer rapidement une fiche visiteur.",
+    route: "/enregistrement",
+  },
+  {
+    Icon: FiSearch,
+    title: "Recherche intelligente",
+    description: "Recherche par nom ou CIN.",
+    route: "/recherche",
+  },
+  {
+    Icon: FiClock,
+    title: "Entrée / Sortie",
+    description: "Gestion des horaires.",
+    route: "/entree-sortie",
+  },
+  {
+    Icon: AiOutlineHistory,
+    title: "Historique",
+    description: "Consulter toutes les visites.",
+    route: "/historique",
+  },
+];
+
+const topBarItems = [//************************************************top bar here  
+  { title: "Accueil", route: "#hero" },
+  { title: "Fonctionnalités", route: "#features" },
+  { title: "À propos", route: "#about" },
+];
+
+
+
+export default function Accueil({ onLogout = () => {} }) { 
   const navigate = useNavigate();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedVisit, setSelectedVisit] = useState(null);
@@ -86,223 +123,20 @@ export default function Accueil({ onLogout }) {
   }, []);
 
 
-
-
-
-  // recherche dynamique
-  const rechercher = async (value) => {
-
-    try {
-
-      const response = await fetch("http://localhost:8080/visites");
-      const data = await response.json();
-      const sorties = data.filter((v) => v.heureFin !== null);
-
-
-      if (value === "") {
-
-        setVisites(data);
-
-      } else {
-
-
-        const filtered = data.filter((v) => {
-
-
-          const nomComplet =
-              `${v.visiteur?.nom || ""} ${v.visiteur?.prenom || ""}`
-                  .toLowerCase();
-
-          const cin = v.visiteur?.cin?.toLowerCase() || "";
-
-          return (
-              nomComplet.startsWith(value) ||
-              cin.startsWith(value)
-          );
-
-
-        });
-
-
-
-        setVisites(filtered);
-
-      }
-
-
-    } catch (error) {
-
-      console.log("Erreur recherche :", error);
-      setVisites([]);
-
-    }
-
-  };
-
-
-  const demanderSuppression = (visite) => {
-    setSelectedVisit(visite);
-    setShowDeletePopup(true);
-  };
-
-  const confirmerSuppression = async () => {
-
-    if (!selectedVisit) {
-      console.log("Aucune visite sélectionnée");
-      return;
-    }
-
-    console.log("ID visite :", selectedVisit.idVisite);
-
-
-    try {
-
-      const response = await fetch(
-          `http://localhost:8080/visites/${selectedVisit.idVisite}`,
-          {
-            method: "DELETE",
-          }
-      );
-
-
-      console.log("Response status :", response.status);
-
-
-      if (response.ok) {
-
-        console.log("Suppression OK");
-
-
-        setVisites((oldVisites) =>
-            oldVisites.filter(
-                (v) => v.idVisite !== selectedVisit.idVisite
-            )
-        );
-
-
-        setShowDeletePopup(false);
-        setSelectedVisit(null);
-
-      }
-
-
-    } catch (error) {
-
-      console.log("Erreur DELETE :", error);
-
-    }
-
-  };
-
-
-
-  const annulerSuppression = () => {
-
-    setShowDeletePopup(false);
-    setSelectedVisit(null);
-
-  };
-  const commencerModification = (v)=>{
-
-    setEditId(v.idVisite);
-
-    setEditData({
-
-      nom: v.visiteur.nom,
-      prenom: v.visiteur.prenom,
-      cin: v.visiteur.cin,
-      societe: v.visiteur.societe,
-
-      personneVisite: v.personneVisite,
-      motif: v.motif,
-
-      dateVisite: v.dateVisite,
-      heureDebut: v.heureDebut,
-      heureFin: v.heureFin
-
-    });
-
-  };
-
-
-
-  const changerValeur = (e) => {
-
-    const {name, value} = e.target;
-
-    setEditData((prev)=>({
-      ...prev,
-      [name]: value
-    }));
-
-  };
-
-  const sauvegarderModification = async(id)=>{
-
-    const data = {
-
-      personneVisite: editData.personneVisite,
-      motif: editData.motif,
-
-      dateVisite: editData.dateVisite,
-      heureDebut: editData.heureDebut,
-      heureFin: editData.heureFin,
-
-      visiteur:{
-        nom: editData.nom,
-        prenom: editData.prenom,
-        cin: editData.cin,
-        societe: editData.societe
-      }
-
-    };
-
-
-    try {
-
-      const response = await fetch(
-          `http://localhost:8080/visites/${id}`,
-          {
-            method:"PUT",
-            headers:{
-              "Content-Type":"application/json"
-            },
-            body:JSON.stringify(data)
-          }
-      );
-
-
-      if(response.ok){
-
-        const updated = await response.json();
-
-
-        setVisites((prev)=>
-            prev.map((v)=>
-                v.idVisite === id
-                    ? updated
-                    : v
-            )
-        );
-
-
-        setEditId(null);
-
-      }
-
-
-    } catch(error){
-
-      console.log("Erreur modification :", error);
-
-    }
-
-  };
-
-
-
-
   return (
+    <div className="accueil">
+      <TopBar items={topBarItems} scrolled={scrolled} onLogout={onLogout} />
+
+      <main>
+        <section className="hero-section animate-on-scroll" id="hero">
+          <div className="hero-card section-card">
+            <div className="hero-copy">
+              <div className="content-block">
+                <span className="eyebrow">Solution sécurisée pour banque</span>
+                <h1>Gestion Sécurisée des Visiteurs</h1>
+                <p>Solution moderne permettant de contrôler les accès, suivre les visites et renforcer la sécurité des locaux.</p>
+              </div>
+            </div>
 
       <div className="accueil">
 

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiLock, FiUser } from "react-icons/fi";
-import { AiFillBank } from "react-icons/ai";
 import logo from "../assets/logo.gif";
 import "./Accueil.css";
 import "./Auth.css";
@@ -33,7 +32,7 @@ function authenticateUser(formData, setIsAuthenticated, setSelectedId, navigate)
   const allowedIds = ["0", "1", "2"];
 
   if (!allowedIds.includes(formData.id)) {
-    window.alert("id non valid you must choose a id from the list below");
+    window.alert("ID non valide ! Vous devez choisir un identifiant parmi la liste.");
     setIsAuthenticated(false);
     setSelectedId("");
     return;
@@ -53,13 +52,26 @@ function authenticateUser(formData, setIsAuthenticated, setSelectedId, navigate)
   }
 }
 
-
 export default function Authentification() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     id: "",
     password: "",
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => window.localStorage.getItem("isAuthenticated") === "true"
+  );
+  const [selectedId, setSelectedId] = useState(
+    () => window.localStorage.getItem("selectedId") || ""
+  );
+
+  const handleLogout = () => {
+    alert("Step 3: Authentification is clearing localStorage and resetting state!");
+    window.localStorage.removeItem("isAuthenticated");
+    window.localStorage.removeItem("selectedId");
+    setSelectedId("");
+    setIsAuthenticated(false);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -74,49 +86,59 @@ export default function Authentification() {
     authenticateUser(formData, () => {}, () => {}, navigate);
   };
 
+  // Safe navigation fallback: if authenticated, render based on selected ID with matching keys
+  if (isAuthenticated) {
+    switch (selectedId) {
+      case "0":
+        return <Accueil key="admin-view" onLogout={handleLogout} />;
+      case "1":
+        return <Accueil key="user-view" onLogout={handleLogout} />;
+      case "2":
+        return <RespSec key="security-view" onLogout={handleLogout} />;
+      default:
+        return <Accueil key="default-view" onLogout={handleLogout} />;
+    }
+  }
+
   return (
     <center>
-    <div className="accueil auth-page">
-      <main className="auth-main">
-        <section className="auth-card section-card">
-          <div className="auth-brand">
-            
-            <div>
+      <div className="accueil auth-page">
+        <main className="auth-main">
+          <section className="auth-card section-card">
+            <div className="auth-brand">
               <img className="auth-logo" src={logo} alt="Logo Attijari" />
             </div>
-          </div>
 
-          <p className="auth-subtitle">
-            Connectez-vous pour accéder à la gestion sécurisée des visiteurs. 
-            0... admin page
-            1... accueil
-            2...security
-          </p>
+            <p className="auth-subtitle">
+              Connectez-vous pour accéder à la gestion sécurisée des visiteurs.
+              <br />
+              <small style={{ opacity: 0.7 }}>0: Admin | 1: Accueil | 2: Security</small>
+            </p>
 
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <AuthInput
-              label={<><FiUser /> Identifiant</>}
-              type="text"
-              name="id"
-              value={formData.id}
-              onChange={handleChange}
-              placeholder="Votre identifiant"
-            />
+            <form className="auth-form" onSubmit={handleSubmit}>
+              <AuthInput
+                label={<><FiUser /> Identifiant</>}
+                type="text"
+                name="id"
+                value={formData.id}
+                onChange={handleChange}
+                placeholder="Votre identifiant"
+              />
 
-            <AuthInput
-              label={<><FiLock /> Mot de passe</>}
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Votre mot de passe"
-            />
+              <AuthInput
+                label={<><FiLock /> Mot de passe</>}
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Votre mot de passe"
+              />
 
-            <AuthButton text="Se connecter" type="submit" />
-          </form>
-        </section>
-      </main>
-    </div>
+              <AuthButton text="Se connecter" type="submit" />
+            </form>
+          </section>
+        </main>
+      </div>
     </center>
   );
 }

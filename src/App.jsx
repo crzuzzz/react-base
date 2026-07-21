@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import Accueil from "./pages/Accueil";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Authentification from "./pages/Authentification";
 import Enregistrement from "./pages/Enregistrement";
 import Horaire from "./pages/Horaire";
 import Fonctionnalites from "./pages/Fonctionnalites";
@@ -39,11 +40,18 @@ function AppRoutes() {
 }
 
 function App() {
-    return (
-        <BrowserRouter>
-            <AppRoutes />
-        </BrowserRouter>
-    );
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Authentification />} />
+        <Route path="/enregistrement" element={<Enregistrement />} />
+        <Route path="/entree-sortie" element={<Horaire />} />
+        <Route path="/historique" element={<Historique />} />
+        <Route path="/recherche" element={<Recherche />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
