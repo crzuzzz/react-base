@@ -1,28 +1,40 @@
 package com.example.gestionvisiteur.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
+@Table(name = "UTILISATEUR")
 public class Utilisateur {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "utilisateur_seq",
+            sequenceName = "utilisateur_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "utilisateur_seq"
+    )
+    @Column(name = "ID_USER")
     private Long idUser;
 
+    @Column(name = "NOM")
     private String nom;
+
+    @Column(name = "PRENOM")
     private String prenom;
+
+    @Column(name = "EMAIL")
     private String email;
+
+    @Column(name = "MOT_DE_PASSE")
     private String motDePass;
-    private Long idRole;
 
+    @Column(name = "ID_ROLE")
+    private Integer idRole;
 
-    @OneToMany(mappedBy = "utilisateur")
-    private List<Journal> journaux;
-
-
-
-
+    public Utilisateur() {}
 
     public Long getIdUser() {
         return idUser;
@@ -64,12 +76,11 @@ public class Utilisateur {
         this.motDePass = motDePass;
     }
 
-    public Long getIdRole() {
+    public Integer getIdRole() {
         return idRole;
     }
 
-    public void setIdRole(Long idRole) {
+    public void setIdRole(Integer idRole) {
         this.idRole = idRole;
     }
-
 }

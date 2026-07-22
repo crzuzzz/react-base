@@ -10,6 +10,20 @@ const statistics = [
     { label: "Alertes de sécurité", value: "0 anomalie" },
 ];
 
+function NbPresentVisitors({ visits }) {
+    const presentCount = visits.filter(visit => visit.status.toUpperCase() === "PRESENT").length;
+    return <span>{presentCount} visiteurs</span>;
+}
+
+function NbTotalVisitsToday({ visits }) {
+    const today = new Date().toISOString().split("T")[0];
+    const totalToday = visits.filter(visit => visit.dateVisite === today).length;
+    return <span>{totalToday} visites</span>;
+}
+
+
+
+
 const topBarItems = [
     { title: "Espace Responsable Sécurité", route: "" },
 ];
@@ -136,12 +150,16 @@ export default function RespSec({ onLogout = () => {} }) {
                         </div>
 
                         <div className="resp-sec-stats-grid">
-                            {statistics.map((stat) => (
-                                <article className="resp-sec-stat" key={stat.label}>
-                                    <span className="resp-sec-stat-label">{stat.label}</span>
-                                    <strong>{stat.value}</strong>
-                                </article>
-                            ))}
+                            <article className="resp-sec-stat" >
+                                <span className="resp-sec-stat-label">Nombre De Visiteur peresent</span>
+                                <strong> <NbPresentVisitors visits={visits} /> </strong>
+                            </article>
+
+                            <article className="resp-sec-stat" >
+                                <span className="resp-sec-stat-label">Nombre De Visiteur Aujourd'hui</span>
+                                <strong> <NbTotalVisitsToday visits={visits} /> </strong>
+                            </article>
+
                         </div>
                     </div>
                 </section>

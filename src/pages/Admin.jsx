@@ -35,83 +35,88 @@ function UserTable({
               </td>
             </tr>
           ) : (
-            users.map((u) => (
-              <tr key={u.idUser}>
-                <td>
-                  {editId === u.idUser ? (
-                    <input value={editData.nom} name="nom" onChange={changerValeur} />
-                  ) : (
-                    u.nom
-                  )}
-                </td>
+            users.map((u, index) => {
+              const userId = u.idUser ?? u.id_user ?? u.id;
+              const isEditing = editId === userId;
 
-                <td>
-                  {editId === u.idUser ? (
-                    <input value={editData.prenom} name="prenom" onChange={changerValeur} />
-                  ) : (
-                    u.prenom
-                  )}
-                </td>
+              return (
+                <tr key={userId || index}>
+                  <td>
+                    {isEditing ? (
+                      <input value={editData.nom} name="nom" onChange={changerValeur} />
+                    ) : (
+                      u.nom || "-"
+                    )}
+                  </td>
 
-                <td>
-                  {editId === u.idUser ? (
-                    <input value={editData.email} name="email" onChange={changerValeur} />
-                  ) : (
-                    u.email
-                  )}
-                </td>
+                  <td>
+                    {isEditing ? (
+                      <input value={editData.prenom} name="prenom" onChange={changerValeur} />
+                    ) : (
+                      u.prenom || "-"
+                    )}
+                  </td>
 
-                <td>
-                  {editId === u.idUser ? (
-                    <input
-                      type="password"
-                      value={editData.motDePass}
-                      name="motDePass"
-                      onChange={changerValeur}
-                    />
-                  ) : (
-                    "••••••••"
-                  )}
-                </td>
+                  <td>
+                    {isEditing ? (
+                      <input value={editData.email} name="email" onChange={changerValeur} />
+                    ) : (
+                      u.email || "-"
+                    )}
+                  </td>
 
-                <td>
-                  {editId === u.idUser ? (
-                    <input
-                      type="number"
-                      value={editData.idRole}
-                      name="idRole"
-                      onChange={changerValeur}
-                    />
-                  ) : (
-                    u.idRole
-                  )}
-                </td>
+                  <td>
+                    {isEditing ? (
+                      <input
+                        type="password"
+                        value={editData.motDePass}
+                        name="motDePass"
+                        onChange={changerValeur}
+                      />
+                    ) : (
+                      "••••••••"
+                    )}
+                  </td>
 
-                <td>
-                  <button
-                    className="action-btn sortie-btn"
-                    onClick={() => {
-                      if (editId === u.idUser) {
-                        sauvegarderModification(u.idUser);
-                      } else {
-                        commencerModification(u);
-                      }
-                    }}
-                  >
-                    {editId === u.idUser ? "Sauvegarder" : "Modifier"}
-                  </button>
-                </td>
+                  <td>
+                    {isEditing ? (
+                      <input
+                        type="number"
+                        value={editData.idRole}
+                        name="idRole"
+                        onChange={changerValeur}
+                      />
+                    ) : (
+                      u.idRole ?? u.id_role ?? 1
+                    )}
+                  </td>
 
-                <td>
-                  <button
-                    className="action-btn historique-btn"
-                    onClick={() => demanderSuppression(u)}
-                  >
-                    Supprimer
-                  </button>
-                </td>
-              </tr>
-            ))
+                  <td>
+                    <button
+                      className="action-btn sortie-btn"
+                      onClick={() => {
+                        if (isEditing) {
+                          sauvegarderModification(userId);
+                        } else {
+                          commencerModification(u);
+                        }
+                      }}
+                    >
+                      {isEditing ? "Sauvegarder" : "Modifier"}
+                    </button>
+                  </td>
+
+                  <td>
+                    <button
+                      className="action-btn historique-btn"
+                      onClick={() => demanderSuppression(u)}
+                    >
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
           )}
         </tbody>
       </table>
@@ -140,21 +145,30 @@ export default function Admin({ onLogout }) {
     idRole: 1
   });
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  // Helper to extract array from any backend JSON response format
+  const extractUsersArray = (data) => {
+    if (Array.isArray(data)) return data;
+    if (data._embedded && data._embedded.utilisateurs) return data._embedded.utilisateurs;
+    if (data._embedded && data._embedded.utilisateursList) return data._embedded.utilisateursList;
+    if (data.content && Array.isArray(data.content)) return data.content;
+    return [];
+  };
 
   const fetchUsers = async () => {
     try {
       const response = await fetch("http://localhost:8080/utilisateurs");
       if (response.ok) {
         const data = await response.json();
-        setUsers(Array.isArray(data) ? data : data.content || []);
+        setUsers(extractUsersArray(data));
       }
     } catch (error) {
       console.error("Error loading users:", error);
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -168,18 +182,20 @@ export default function Admin({ onLogout }) {
   const rechercher = async (value) => {
     try {
       const response = await fetch("http://localhost:8080/utilisateurs");
-      const data = await response.json();
-      const list = Array.isArray(data) ? data : data.content || [];
+      if (response.ok) {
+        const data = await response.json();
+        const list = extractUsersArray(data);
 
-      if (value === "") {
-        setUsers(list);
-      } else {
-        const filtered = list.filter((u) => {
-          const nomComplet = `${u.nom || ""} ${u.prenom || ""}`.toLowerCase();
-          const email = (u.email || "").toLowerCase();
-          return nomComplet.includes(value) || email.includes(value);
-        });
-        setUsers(filtered);
+        if (value.trim() === "") {
+          setUsers(list);
+        } else {
+          const filtered = list.filter((u) => {
+            const nomComplet = `${u.nom || ""} ${u.prenom || ""}`.toLowerCase();
+            const email = (u.email || "").toLowerCase();
+            return nomComplet.includes(value) || email.includes(value);
+          });
+          setUsers(filtered);
+        }
       }
     } catch (error) {
       console.error("Search error:", error);
@@ -195,17 +211,21 @@ export default function Admin({ onLogout }) {
   const ajouterUtilisateur = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        ...newUser,
+        idRole: Number(newUser.idRole)
+      };
+
       const response = await fetch("http://localhost:8080/utilisateurs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser)
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {
-        const createdUser = await response.json();
-        setUsers((prev) => [...prev, createdUser]);
         setShowAddModal(false);
         setNewUser({ nom: "", prenom: "", email: "", motDePass: "", idRole: 1 });
+        fetchUsers(); // Refresh real database list
       }
     } catch (error) {
       console.error("Error creating user:", error);
@@ -213,13 +233,14 @@ export default function Admin({ onLogout }) {
   };
 
   const commencerModification = (user) => {
-    setEditId(user.idUser);
+    const userId = user.idUser ?? user.id_user ?? user.id;
+    setEditId(userId);
     setEditData({
       nom: user.nom || "",
       prenom: user.prenom || "",
       email: user.email || "",
       motDePass: user.motDePass || "",
-      idRole: user.idRole || 1
+      idRole: user.idRole ?? user.id_role ?? 1
     });
   };
 
@@ -230,16 +251,20 @@ export default function Admin({ onLogout }) {
 
   const sauvegarderModification = async (id) => {
     try {
+      const payload = {
+        ...editData,
+        idRole: Number(editData.idRole)
+      };
+
       const response = await fetch(`http://localhost:8080/utilisateurs/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editData)
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {
-        const updated = await response.json();
-        setUsers((prev) => prev.map((u) => (u.idUser === id ? updated : u)));
         setEditId(null);
+        fetchUsers(); // Refresh real database list
       }
     } catch (error) {
       console.error("Error editing user:", error);
@@ -253,16 +278,17 @@ export default function Admin({ onLogout }) {
 
   const confirmerSuppression = async () => {
     if (!selectedUser) return;
-    try {
-      const response = await fetch(
-        `http://localhost:8080/utilisateurs/${selectedUser.idUser}`,
-        { method: "DELETE" }
-      );
+    const userId = selectedUser.idUser ?? selectedUser.id_user ?? selectedUser.id;
 
-      if (response.ok) {
-        setUsers((prev) => prev.filter((u) => u.idUser !== selectedUser.idUser));
+    try {
+      const response = await fetch(`http://localhost:8080/utilisateurs/${userId}`, {
+        method: "DELETE"
+      });
+
+      if (response.ok || response.status === 204) {
         setShowDeletePopup(false);
         setSelectedUser(null);
+        fetchUsers(); // Refresh real database list
       }
     } catch (error) {
       console.error("Error deleting user:", error);
