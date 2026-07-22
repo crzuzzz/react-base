@@ -1,9 +1,9 @@
 package com.example.gestionvisiteur.service;
 
 import com.example.gestionvisiteur.model.Journal;
-import com.example.gestionvisiteur.model.Utulisateur;
+import com.example.gestionvisiteur.model.Utilisateur;
 import com.example.gestionvisiteur.repository.JournalRepository;
-import com.example.gestionvisiteur.repository.UtulisateurRepository;
+import com.example.gestionvisiteur.repository.UtilisateurRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,103 +11,103 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class UtulisateurService {
+public class UtilisateurService {
 
-    private final UtulisateurRepository utulisateurRepository;
+    private final UtilisateurRepository utilisateurRepository;
     private final JournalRepository journalRepository;
 
-    public UtulisateurService(
-            UtulisateurRepository utulisateurRepository,
+    public UtilisateurService(
+            UtilisateurRepository utilisateurRepository,
             JournalRepository journalRepository
     ) {
-        this.utulisateurRepository = utulisateurRepository;
+        this.utilisateurRepository = utilisateurRepository;
         this.journalRepository = journalRepository;
     }
 
-    // ajouter un utulisateur
-    public Utulisateur ajouterUtulisateur(Utulisateur utulisateur) {
+    // ajouter un utilisateur
+    public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) {
 
-        Utulisateur savedUtulisateur = utulisateurRepository.save(utulisateur);
+        Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
 
-        Utulisateur actor = utulisateurRepository.findById(1L).orElse(null);
+        Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
 
         Journal log = new Journal(
-                "Ajout de l'utulisateur ID: " + savedUtulisateur.getIdUser() + " (" + savedUtulisateur.getEmail() + ")",
+                "Ajout de l'utilisateur ID: " + savedUtilisateur.getIdUser() + " (" + savedUtilisateur.getEmail() + ")",
                 LocalDateTime.now(),
                 actor
         );
 
         journalRepository.save(log);
 
-        return savedUtulisateur;
+        return savedUtilisateur;
     }
 
-    // afficher tous les utulisateurs
+    // afficher tous les utilisateurs
     @Transactional(readOnly = true)
-    public List<Utulisateur> getAllUtulisateurs() {
+    public List<Utilisateur> getAllUtilisateurs() {
 
-        List<Utulisateur> utulisateurs = utulisateurRepository.findAll();
+        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
 
-        System.out.println("Repository = " + utulisateurs.size());
+        System.out.println("Repository = " + utilisateurs.size());
 
-        return utulisateurs;
+        return utilisateurs;
     }
 
-    // obtenir un utulisateur par ID
+    // obtenir un utilisateur par ID
     @Transactional(readOnly = true)
-    public Utulisateur getUtulisateurById(Long id) {
-        return utulisateurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utulisateur non trouvé"));
+    public Utilisateur getUtilisateurById(Long id) {
+        return utilisateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
     }
 
-    // modifier un utulisateur
+    // modifier un utilisateur
     @Transactional
-    public Utulisateur modifierUtulisateur(Long id, Utulisateur nouvelUtulisateur) {
+    public Utilisateur modifierUtilisateur(Long id, Utilisateur nouvelUtilisateur) {
 
-        Utulisateur utulisateur = utulisateurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utulisateur non trouvé"));
+        Utilisateur utilisateur = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        utulisateur.setNom(nouvelUtulisateur.getNom());
-        utulisateur.setPrenom(nouvelUtulisateur.getPrenom());
-        utulisateur.setEmail(nouvelUtulisateur.getEmail());
-        utulisateur.setIdRole(nouvelUtulisateur.getIdRole());
+        utilisateur.setNom(nouvelUtilisateur.getNom());
+        utilisateur.setPrenom(nouvelUtilisateur.getPrenom());
+        utilisateur.setEmail(nouvelUtilisateur.getEmail());
+        utilisateur.setIdRole(nouvelUtilisateur.getIdRole());
 
-        if (nouvelUtulisateur.getMotDePass() != null && !nouvelUtulisateur.getMotDePass().trim().isEmpty()) {
-            utulisateur.setMotDePass(nouvelUtulisateur.getMotDePass());
+        if (nouvelUtilisateur.getMotDePass() != null && !nouvelUtilisateur.getMotDePass().trim().isEmpty()) {
+            utilisateur.setMotDePass(nouvelUtilisateur.getMotDePass());
         }
 
-        Utulisateur savedUtulisateur = utulisateurRepository.save(utulisateur);
+        Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
 
-        Utulisateur actor = utulisateurRepository.findById(1L).orElse(null);
+        Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
 
         Journal log = new Journal(
-                "Modification de l'utulisateur ID: " + savedUtulisateur.getIdUser(),
+                "Modification de l'utilisateur ID: " + savedUtilisateur.getIdUser(),
                 LocalDateTime.now(),
                 actor
         );
 
         journalRepository.save(log);
 
-        return savedUtulisateur;
+        return savedUtilisateur;
     }
 
-    // supprimer un utulisateur
+    // supprimer un utilisateur
     @Transactional
-    public void supprimerUtulisateur(Long id) {
+    public void supprimerUtilisateur(Long id) {
 
-        Utulisateur utulisateur = utulisateurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utulisateur non trouvé"));
+        Utilisateur utilisateur = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        Utulisateur actor = utulisateurRepository.findById(1L).orElse(null);
+        Utilisateur actor = utilisateurRepository.findById(1L).orElse(null);
 
         Journal log = new Journal(
-                "Suppression de l'utulisateur ID: " + utulisateur.getIdUser() + " (" + utulisateur.getEmail() + ")",
+                "Suppression de l'utilisateur ID: " + utilisateur.getIdUser() + " (" + utilisateur.getEmail() + ")",
                 LocalDateTime.now(),
                 actor
         );
 
         journalRepository.save(log);
 
-        utulisateurRepository.delete(utulisateur);
+        utilisateurRepository.delete(utilisateur);
     }
 }
