@@ -1,6 +1,8 @@
 import "./Accueil.css";
+import LogoutButton from "./LogoutButton.jsx";
 
-export default function TopBar({ items = [], scrolled = false, onLogout = () => {} }) {
+
+export default function TopBar({ items = [], scrolled = false }) {
   return (
     <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-inner">
@@ -18,11 +20,10 @@ export default function TopBar({ items = [], scrolled = false, onLogout = () => 
         </nav>
 
         <div className="nav-actions">
-          <button className="button button-primary" type="button" onClick={onLogout}>
-            Déconnexion
-          </button>
+          <LogoutButton />
         </div>
       </div>
     </header>
   );
 }
+

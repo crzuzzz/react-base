@@ -2,8 +2,9 @@
 import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import "./Accueil.css";
+import LogoutButton from "./LogoutButton.jsx";
 
-export default function Accueil({ onLogout }) {
+export default function Accueil() {
 
   const navigate = useNavigate();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -362,12 +363,7 @@ export default function Accueil({ onLogout }) {
 
             <div className="nav-actions">
 
-              <button
-                  className="button button-primary"
-                  onClick={onLogout}
-              >
-                Déconnexion
-              </button>
+              <LogoutButton />
 
             </div>
 

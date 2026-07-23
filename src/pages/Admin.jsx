@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiSearch, FiUserPlus } from "react-icons/fi";
 import "./Admin.css";
+import LogoutButton from "./LogoutButton.jsx";
+
 
 function UserTable({
   users,
@@ -124,7 +126,7 @@ function UserTable({
   );
 }
 
-export default function Admin({ onLogout }) {
+export default function Admin() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState("");
@@ -329,9 +331,7 @@ export default function Admin({ onLogout }) {
           </nav>
 
           <div className="nav-actions">
-            <button className="button button-primary" onClick={onLogout}>
-              Déconnexion
-            </button>
+            <LogoutButton />
           </div>
         </div>
       </header>

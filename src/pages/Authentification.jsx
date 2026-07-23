@@ -13,7 +13,7 @@ function AuthButton({ text, type = "button", disabled }) {
   );
 }
 
-function AuthInput({ label, type, name, value, onChange, placeholder, required = true }) {
+function AuthInput({ label, type = "text", name, value, onChange, placeholder, required = true }) {
   return (
     <label className="auth-field">
       <span>{label}</span>
@@ -68,33 +68,34 @@ export default function Authentification() {
     setLoading(true);
 
     try {
-      // 1. Fetch all users from your Spring Boot backend
-      const response = await fetch("http://localhost:8080/utilisateurs");
-      
-      if (!response.ok) {
-        throw new Error("Erreur de connexion au serveur");
-      }
+      // Direct POST request to Spring Boot authentication endpoint
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-      const users = await response.json();
+      if (response.ok) {
+        const user = await response.json();
 
-      // 2. Find matching user by email and password
-      const user = users.find(
-        (u) => u.email === formData.email && u.motDePass === formData.password
-      );
-
-      if (user) {
-        // Store user details in localStorage
+        // Save session state locally
         window.localStorage.setItem("isAuthenticated", "true");
         window.localStorage.setItem("user", JSON.stringify(user));
 
-        // 3. Navigate based on idRole
+        // Redirect based on idRole
         handleNavigation(user.idRole);
       } else {
-        setError("Email ou mot de passe incorrect.");
+        const errorMessage = await response.text();
+        setError(errorMessage || "E-mail ou mot de passe incorrect.");
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Impossible de contacter le serveur. Veuillez réessayer.");
+      setError("Impossible de contacter le serveur. Assurez-vous que le backend est démarré.");
     } finally {
       setLoading(false);
     }
@@ -115,12 +116,18 @@ export default function Authentification() {
               Connectez-vous pour accéder à la gestion sécurisée des visiteurs.
             </p>
 
-            {error && <div className="auth-error-message" style={{ color: "red", marginBottom: "1rem" }}>{error}</div>}
+            {error && (
+              <div className="auth-error-message" style={{ color: "#d32f2f", marginBottom: "1rem", fontWeight: "bold" }}>
+                {error}
+              </div>
+            )}
 
             <form className="auth-form" onSubmit={handleSubmit}>
               <AuthInput
                 label={<><FiMail /> Adresse E-mail</>}
+                type="email"
                 name="email"
+                value={formData.email}
                 onChange={handleChange}
                 placeholder="votre.email@attijari.com"
               />

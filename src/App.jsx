@@ -1,43 +1,123 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import Authentification from "./pages/Authentification";
 import Accueil from "./pages/Accueil";
 import Enregistrement from "./pages/Enregistrement";
 import Horaire from "./pages/Horaire";
 import Fonctionnalites from "./pages/Fonctionnalites";
-import Authentification from "./pages/Authentification";
 import APropos from "./pages/APropos";
 import RespSec from "./pages/RespSec.jsx";
-import Admin from "./pages/Admin.jsx"; // Capitalized Admin
-import File1 from "./pages/File1"; // Import your new page
-import File2 from "./pages/File2"; // Import your new page
+import Admin from "./pages/Admin.jsx";
+import File1 from "./pages/File1";
+import File2 from "./pages/File2";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppRoutes() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate("/");
+    // 1. Clear authentication session
+    window.localStorage.removeItem("isAuthenticated");
+    window.localStorage.removeItem("user");
+
+    // 2. Redirect to login & clear browser history stack
+    navigate("/", { replace: true });
   };
 
   return (
     <Routes>
+      {/* Public Login Route */}
       <Route path="/" element={<Authentification />} />
 
-      {/* Main Pages */}
-      <Route path="/accueil" element={<Accueil onLogout={handleLogout} />} />
-      <Route path="/enregistrement" element={<Enregistrement />} />
-      <Route path="/entree-sortie" element={<Horaire />} />
-      <Route path="/a-propos" element={<APropos />} />
-      <Route path="/repsec" element={<RespSec onLogout={handleLogout} />} />
+      {/* Role 1: Reception / Accueil Routes */}
+      <Route
+        path="/accueil"
+        element={
+          <ProtectedRoute allowedRoles={[1]}>
+            <Accueil onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/enregistrement"
+        element={
+          <ProtectedRoute allowedRoles={[1]}>
+            <Enregistrement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/entree-sortie"
+        element={
+          <ProtectedRoute allowedRoles={[1]}>
+            <Horaire />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/fonctionnalites"
+        element={
+          <ProtectedRoute allowedRoles={[1]}>
+            <Fonctionnalites mode="accueil" />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Admin Panel */}
-      <Route path="/admin" element={<Admin onLogout={handleLogout} />} />
+      {/* Role 2: Admin Routes */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRoles={[2]}>
+            <Admin onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/fonctionnalites"
+        element={
+          <ProtectedRoute allowedRoles={[2]}>
+            <Fonctionnalites mode="admin" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/file1"
+        element={
+          <ProtectedRoute allowedRoles={[2]}>
+            <File1 />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/file2"
+        element={
+          <ProtectedRoute allowedRoles={[2]}>
+            <File2 />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Dual-mode Fonctionnalités routes */}
-      <Route path="/fonctionnalites" element={<Fonctionnalites mode="accueil" />} />
-      <Route path="/admin/fonctionnalites" element={<Fonctionnalites mode="admin" />} />
+      {/* Role 3: Security Officer Route */}
+      <Route
+        path="/repsec"
+        element={
+          <ProtectedRoute allowedRoles={[3]}>
+            <RespSec onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Temporary Placeholders for Admin Feature Cards */}
-      <Route path="/file1" element={<File1 />} />
-      <Route path="/file2" element={<File2 />} />
+      {/* Shared Public or General Info Pages */}
+      <Route
+        path="/a-propos"
+        element={
+          <ProtectedRoute allowedRoles={[1, 2, 3]}>
+            <APropos />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Fallback Catch-all: Redirect unknown paths back to login */}
+      <Route path="*" element={<Authentification />} />
     </Routes>
   );
 }

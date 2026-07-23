@@ -16,13 +16,12 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable()) // Disable CSRF for REST APIs
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for REST endpoints
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/utilisateurs/**", "/visiteurs/**", "/visites/**", "/journal/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/**").permitAll() // Allows access to all API routes
             );
 
         return http.build();
@@ -31,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000")); // Your React frontend ports
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000")); // React ports
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

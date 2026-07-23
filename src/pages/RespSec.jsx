@@ -2,13 +2,9 @@ import { useEffect, useState } from "react";
 import "./RespSec.css";
 import TopBar from "./TopBar.jsx";
 import { useNavigate } from "react-router-dom";
+import LogoutButton from "./LogoutButton.jsx";
 
-const statistics = [
-    { label: "Présents sur site", value: "12 visiteurs" },
-    { label: "Total visites aujourd'hui", value: "45 visites" },
-    { label: "Visites en attente", value: "8 planifiées" },
-    { label: "Alertes de sécurité", value: "0 anomalie" },
-];
+
 
 function NbPresentVisitors({ visits }) {
     const presentCount = visits.filter(visit => visit.status.toUpperCase() === "PRESENT").length;
@@ -64,7 +60,7 @@ function DisplayTables({ visits }) {
     );
 }
 
-export default function RespSec({ onLogout = () => {} }) {
+export default function RespSec() {
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
     const [visits, setVisits] = useState([]);
@@ -134,9 +130,6 @@ export default function RespSec({ onLogout = () => {} }) {
             <TopBar
                 items={topBarItems}
                 scrolled={scrolled}
-                onLogout={() => {
-                    onLogout();
-                }}
             />
 
             <main className="resp-sec-main">
