@@ -120,7 +120,6 @@ export default function Authentification() {
             <form className="auth-form" onSubmit={handleSubmit}>
               <AuthInput
                 label={<><FiMail /> Adresse E-mail</>}
-                type="email"
                 name="email"
                 onChange={handleChange}
                 placeholder="votre.email@attijari.com"
